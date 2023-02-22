@@ -46,6 +46,21 @@ public class Datasource {
     public static final int ORDER_BY_ASC = 2;
     public static final int ORDER_BY_DESC = 3;
 
+    //Query specific string (MAKE SURE TO APPEND INGREDIENT SEARCHED FOR IN METHOD)
+    public static final String QUERY_RECIPE_WITH_GIVEN_INGREDIENT =
+            "SELECT " + TABLE_INGREDIENTS + "." + COLUMN_INGREDIENT_NAME + ", " + TABLE_STEPS + "." + COLUMN_STEP_NAME +
+                    ", " + TABLE_RECIPES + "." + COLUMN_RECIPES_NAME + ", " + TABLE_RECIPES + "." + COLUMN_LIKES + ", " +
+                    TABLE_RECIPES + "." + COLUMN_PHOTO_URL +
+                    " FROM " + TABLE_INGREDIENTS +
+                    " INNER JOIN " + TABLE_STEPS +
+                    " ON " + TABLE_INGREDIENTS + "." + COLUMN_STEP_FK_INT + " = " + TABLE_STEPS + "." + COLUMN_STEPS_ID +
+                    " INNER JOIN " + TABLE_RECIPES +
+                    " ON " + TABLE_RECIPES + "." + COLUMN_RECIPES_ID + " = " + TABLE_STEPS + "." + COLUMN_RECIPES_FK_INT +
+                    " WHERE " + TABLE_INGREDIENTS + "." + COLUMN_INGREDIENT_NAME + " = \"";
+
+    public static final String  QUERY_RECIPE_WITH_GIVEN_INGREDIENT_SORT =
+            "ORDER BY " + TABLE_RECIPES + "." + COLUMN_RECIPES_NAME + " COLLATE NOCASE ";
+
 
     //Connection control
     private Connection conn;
@@ -115,6 +130,7 @@ public class Datasource {
     }
 
     //List all recipes with their respective steps with decision on how to sort
+    //Could also put many of those appends into a string constant above to avoid repetition if more queries are done
     public List<Recipes> queryStepsForRecipes(int sortOrder){
         StringBuilder sb = new StringBuilder("SELECT * FROM ");
         sb.append(TABLE_RECIPES);
@@ -141,7 +157,7 @@ public class Datasource {
 
         }
 
-        System.out.println("SQL STATEMENT... " + sb.toString()); //good measure for testing purposes
+        //System.out.println("SQL STATEMENT... " + sb.toString()); //good measure for testing purposes
 
         try (Statement statement = conn.createStatement();
              ResultSet results = statement.executeQuery(sb.toString())){
@@ -165,6 +181,43 @@ public class Datasource {
             e.printStackTrace();
             return null;
         }
+    }
+
+    //Method to query list of recipes with particular ingredient
+    public List<IngredientRecipe> queryRecipeBasedOnIngredient(String ingredient, int sortOrder) {
+        StringBuilder sb = new StringBuilder(QUERY_RECIPE_WITH_GIVEN_INGREDIENT);
+        sb.append(ingredient);
+        sb.append("\"");
+
+        if (sortOrder != ORDER_BY_NONE) {
+            sb.append(QUERY_RECIPE_WITH_GIVEN_INGREDIENT_SORT);
+            if (sortOrder == ORDER_BY_DESC) {
+                sb.append("DESC");
+            } else {
+                sb.append("ASC");
+            }
+        }
+
+        //System.out.println("SQL STATEMENT: " + sb.toString());
+
+        try (Statement statement = conn.createStatement();
+             ResultSet results = statement.executeQuery(sb.toString())) {
+
+            List<IngredientRecipe> ingredientRecipe = new ArrayList<>();
+
+            while (results.next()) {
+                IngredientRecipe holder = new IngredientRecipe();
+                holder.setRecipeName(results.getString(3));
+                holder.setStepNumber(results.getInt(4));
+                holder.setIngredient(results.getString(1));
+                ingredientRecipe.add(holder);
+            }
+            return ingredientRecipe;
+        } catch (SQLException e) {
+            System.out.println("Error in fetching data -> " + e);
+            return null;
+        }
+
     }
 
 }
