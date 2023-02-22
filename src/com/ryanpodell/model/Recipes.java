@@ -7,6 +7,8 @@ public class Recipes {
     private String recipeName;
     private int likes;
     private String photoUrl;
+    private int stepNumber;
+    private String stepDesc;
 
     //Getters and setters
     public int getId() {
@@ -39,5 +41,21 @@ public class Recipes {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public int getStepNumber() {
+        return stepNumber;
+    }
+
+    public void setStepNumber(int stepNumber) {
+        this.stepNumber = stepNumber;
+    }
+
+    public String getStepDesc() {
+        return stepDesc;
+    }
+
+    public void setStepDesc(String stepDesc) {
+        this.stepDesc = stepDesc;
     }
 }

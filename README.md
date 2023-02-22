@@ -23,6 +23,6 @@ Showcases understanding of
 
 ` Architecture of various classes inside model package `
 
-` `
+` Using stringbuilder to create helper SQL statements `
 
 ` `
