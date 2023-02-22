@@ -22,7 +22,10 @@ public class Main {
         //activateAllRecipesWithStepsMethod(datasource);
 
         //List all recipes with a given ingredient
-        activateRecipesWithGivenIngredient("Carrots", datasource);
+        //activateRecipesWithGivenIngredient("Carrots", datasource);
+
+        //Collection metadata from table since JDBC doesn't support this feature very well
+        datasource.queryIngredientsMetadata();
 
         // Close connection
         datasource.close();
