@@ -25,26 +25,10 @@ public class Main {
                           COLUMN_LIKES + " INTEGER, " +
                           COLUMN_RECIPE_URL + " text)"); //statement instance
 
-            statement.execute("INSERT INTO " + TABLE_RECIPES +
-                    " (" + COLUMN_RECIPE_NAME + ", " +
-                    COLUMN_LIKES + ", " +
-                    COLUMN_RECIPE_URL +
-                    " ) " +
-                    "VALUES('brocolli and rice', 582, 'www.google.com')");
-
-            statement.execute("INSERT INTO " + TABLE_RECIPES +
-                    " (" + COLUMN_RECIPE_NAME + ", " +
-                    COLUMN_LIKES + ", " +
-                    COLUMN_RECIPE_URL +
-                    " ) " +
-                    "VALUES('carrots and rice', 782, 'www.google.com')");
-
-            statement.execute("INSERT INTO " + TABLE_RECIPES +
-                    " (" + COLUMN_RECIPE_NAME + ", " +
-                    COLUMN_LIKES + ", " +
-                    COLUMN_RECIPE_URL +
-                    " ) " +
-                    "VALUES('spinach and rice', 782, 'www.google.com')");
+            insertRecipe(statement,"broccoli and rice", 582, "www.google.com");
+            insertRecipe(statement,"carrots and rice", 782, "www.google.com");
+            insertRecipe(statement,"veggies and rice", 182, "www.google.com");
+            insertRecipe(statement,"water and rice", 2, "www.google.com");
 
             //statement.execute("UPDATE recipes SET likes=100 WHERE recipe_name='spinach and rice'");
 
@@ -67,5 +51,14 @@ public class Main {
         } catch (SQLException e){
             System.out.println("Error -> " + e);
         }
+    }
+
+    private static void insertRecipe(Statement statement, String recipeName, int likes, String recipeUrl) throws SQLException{
+        statement.execute("INSERT INTO " + TABLE_RECIPES +
+                " (" + COLUMN_RECIPE_NAME + ", " +
+                COLUMN_LIKES + ", " +
+                COLUMN_RECIPE_URL +
+                " ) " +
+                "VALUES('" + recipeName + "', " + likes + ", '" + recipeUrl + "')");
     }
 }
