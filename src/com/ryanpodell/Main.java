@@ -3,9 +3,9 @@ package com.ryanpodell;
 import java.sql.*;
 
 public class Main {
-    public static final String DB_NAME = "recipedb.db";
+
     public static final String PK = "_id";
-    public static final String CONNECTION_STRING = "jdbc:sqlite:C:\\Users\\rpode\\Documents\\Coding\\recipes-db\\" + DB_NAME;
+
 
     //Recipe Table
     public static final String TABLE_RECIPES = "recipes";
