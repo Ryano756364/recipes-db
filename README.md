@@ -21,7 +21,7 @@ Showcases understanding of
 
 ` using the printstacktrace in debugging (but not production!!!)`
 
-` `
+` Architecture of various classes inside model package `
 
 ` `
 

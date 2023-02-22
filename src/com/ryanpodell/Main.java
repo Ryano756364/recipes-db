@@ -1,35 +1,59 @@
 package com.ryanpodell;
 
+import com.ryanpodell.model.Datasource;
+import com.ryanpodell.model.Recipes;
+
 import java.sql.*;
+import java.util.List;
 
 public class Main {
 
-    public static final String PK = "_id";
 
-
-    //Recipe Table
-    public static final String TABLE_RECIPES = "recipes";
-    public static final String COLUMN_RECIPE_NAME = "recipe_name";
-    public static final String COLUMN_LIKES = "likes";
-    public static final String COLUMN_PHOTO_URL = "photo_url";
-
-    //Steps Table
-    public static final String TABLE_STEPS = "steps";
-    public static final String COLUMN_STEP_NAME = "step_name";
-    public static final String COLUMN_RECIPE_FK_INT = "recipe";
-
-    //Ingredients Table
-    public static final String TABLE_INGREDIENTS = "ingredients";
-    public static final String COLUMN_INGREDIENT_NAME = "ingredient_name";
-    public static final String COLUMN_INGREDIENT_AMOUNT = "ingredient_amount";
-    public static final String COLUMN_STEP_FK_INT = "step";
 
     public static void main(String[] args) {
 
-        // Make sure to first import SQLite JDBC driver -> File -> Project Structure -> Libraries -> "+" -> "Java" -> (Then import downloaded file)
-        // This setup with automatically close the connection. Otherwise, it is mandatory to close as it is done below.
+        //Remember to make sure to import the JDBC SQL driver to file
+        Datasource datasource = new Datasource();
+        if (!datasource.open()) {
+            System.out.println("\nCannot open datasource");
+            return;
+        } else {
+            System.out.println("\nDatasource open!");
+        }
+
+
+        //List all recipes
+        List<Recipes> recipes = datasource.queryRecipes();
+        if(recipes == null){
+            System.out.println("No recipes!");
+        }
+
+        assert recipes != null;
+        for(Recipes recipe : recipes){
+            System.out.println("\nID = " + recipe.getId() +
+                    "\nRecipe Name = " + recipe.getRecipeName() +
+                    "\nLikes = " + recipe.getLikes() +
+                    "\nRecipe Image = " + recipe.getPhotoUrl());
+        }
+
+
+
+        // Close connection
+        datasource.close();
+    }
+}
+
+
+
+
+
+        /*
+
+
+
+
         try (Connection conn = DriverManager.getConnection(CONNECTION_STRING);
-             Statement statement = conn.createStatement()) {  //connection instance){
+             Statement statement = conn.createStatement()) {
 
             statement.execute("DROP TABLE IF EXISTS " + TABLE_RECIPES);
             statement.execute("DROP TABLE IF EXISTS " + TABLE_STEPS);
@@ -78,20 +102,6 @@ public class Main {
             insertIngredient(statement, "Limes", 12, 4);
 
 
-            //statement.execute("UPDATE recipes SET likes=100 WHERE recipe_name='spinach and rice'");
-
-            //statement.execute("DELETE FROM recipes WHERE recipe_name='carrots and rice'");
-
-            //statement.execute("SELECT * FROM recipes");
-            //ResultSet results = statement.getResultSet();
-//            ResultSet results = statement.executeQuery("SELECT * FROM " + TABLE_RECIPES); //cleaner way to code this versus two lines above
-//            while (results.next()) {
-//                System.out.println(results.getString(COLUMN_RECIPE_NAME) + " " +
-//                        results.getInt(COLUMN_LIKES) + " " +
-//                        results.getString(COLUMN_PHOTO_URL));
-//            }
-//            results.close();
-
             statement.close();
             conn.close();
 
@@ -129,3 +139,7 @@ public class Main {
                 "VALUES('" + ingredientName + "', " + ingredientAmount + ", '" + stepForeignKey + "')");
     }
 }
+
+
+
+         */
