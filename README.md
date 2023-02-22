@@ -17,9 +17,9 @@ Showcases understanding of
 
 ` Importance of closing ResultSet class after query is complete `
 
-` `
+` avoiding sql injection attack by not using constant variables `
 
-` `
+` using the printstacktrace in debugging (but not production!!!)`
 
 ` `
 
