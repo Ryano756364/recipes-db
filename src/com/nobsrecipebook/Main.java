@@ -1,6 +1,7 @@
 package com.nobsrecipebook;
 
-import com.ryanpodell.model.Datasource;
+
+import com.nobsrecipebook.model.Datasource;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,6 +12,8 @@ public class Main {
         } else {
             System.out.println("\nDatasource open!");
         }
+
+        datasource.listAllContacts();
 
 
         // Close connection
