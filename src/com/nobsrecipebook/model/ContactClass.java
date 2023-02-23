@@ -1,10 +1,12 @@
 package com.nobsrecipebook.model;
 
+import org.json.simple.JSONArray;
+
 import java.util.List;
 
 public class ContactClass {
     //Fields
-    private int id;
+    private String id;
     private String firstName;
     private String lastName;
     private String dateOfBirth;
@@ -12,11 +14,11 @@ public class ContactClass {
     private String Country;
     private List<String> friends;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
