@@ -1,8 +1,8 @@
 package com.nobsrecipebook.model;
-
 import java.util.ArrayList;
 
 public class Instruction {
+    //Fields
     private int idPrimaryKey;
     private int recipeIdForeignKey;
     private int stepNumber;
@@ -10,6 +10,7 @@ public class Instruction {
     private ArrayList<String> ingredientsNeeded;
     private ArrayList<String> equipmentNeeded;
 
+    //Getters and setters
     public int getIdPrimaryKey() {
         return idPrimaryKey;
     }

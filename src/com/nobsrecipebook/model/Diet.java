@@ -1,12 +1,13 @@
 package com.nobsrecipebook.model;
-
 import java.util.ArrayList;
 
 public class Diet {
+    //Fields
     private int idPrimaryKey;
     private int recipeIdForeignKey;
     private ArrayList<String> dietListTypes;
 
+    //Getters and setters
     public int getIdPrimaryKey() {
         return idPrimaryKey;
     }

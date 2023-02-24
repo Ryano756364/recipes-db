@@ -1,12 +1,13 @@
 package com.nobsrecipebook.model;
-
 import java.util.ArrayList;
 
 public class Cuisine {
+    //Fields
     private int idPrimaryKey;
     private int recipeIdForeignKey;
     private ArrayList<String> cuisineListTypes;
 
+    //Getters and setters
     public int getIdPrimaryKey() {
         return idPrimaryKey;
     }

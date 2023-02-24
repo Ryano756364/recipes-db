@@ -1,7 +1,6 @@
 package com.nobsrecipebook.model;
-
 public class Ingredient {
-
+    //Fields
     private int idPrimaryKey;
     private int recipeIdForeignKey;
     private String nameOfIngredient;
@@ -9,6 +8,7 @@ public class Ingredient {
     private int amountOfIngredientNeeded;
     private String unitMeasurementOfIngredient;
 
+    //Getters and setters
     public int getIdPrimaryKey() {
         return idPrimaryKey;
     }

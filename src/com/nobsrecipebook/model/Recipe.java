@@ -1,8 +1,7 @@
 package com.nobsrecipebook.model;
 
-import java.util.ArrayList;
-
 public class Recipe {
+    //Fields
     private int idPrimaryKey;
     private boolean isRecipeVegetarian;
     private boolean isRecipeVegan;
@@ -15,6 +14,7 @@ public class Recipe {
     private String summaryOfRecipe;
     private String instructionsForRecipe;
 
+    //Getters and setters
     public int getIdPrimaryKey() {
         return idPrimaryKey;
     }
