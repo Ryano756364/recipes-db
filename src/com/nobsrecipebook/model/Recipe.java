@@ -1,13 +1,12 @@
 package com.nobsrecipebook.model;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Recipe {
-    private int id;
+    private int idPrimaryKey;
     private boolean isRecipeVegetarian;
     private boolean isRecipeVegan;
-    private boolean isRecipeGluentFree;
+    private boolean isRecipeGlutenFree;
     private boolean isRecipeDairyFree;
     private boolean isRecipeVeryPopular;
     private String titleOfRecipe;
@@ -15,16 +14,13 @@ public class Recipe {
     private String imageUrlOfRecipe;
     private String summaryOfRecipe;
     private String instructionsForRecipe;
-    private ArrayList<String> cuisineTypeOfRecipe;
-    private ArrayList<String> dishTypesOfRecipe;
-    private ArrayList<String> dietsOfRecipe;
 
-    public int getId() {
-        return id;
+    public int getIdPrimaryKey() {
+        return idPrimaryKey;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdPrimaryKey(int idPrimaryKey) {
+        this.idPrimaryKey = idPrimaryKey;
     }
 
     public boolean isRecipeVegetarian() {
@@ -43,12 +39,12 @@ public class Recipe {
         isRecipeVegan = recipeVegan;
     }
 
-    public boolean isRecipeGluentFree() {
-        return isRecipeGluentFree;
+    public boolean isRecipeGlutenFree() {
+        return isRecipeGlutenFree;
     }
 
-    public void setRecipeGluentFree(boolean recipeGluentFree) {
-        isRecipeGluentFree = recipeGluentFree;
+    public void setRecipeGlutenFree(boolean recipeGlutenFree) {
+        isRecipeGlutenFree = recipeGlutenFree;
     }
 
     public boolean isRecipeDairyFree() {
@@ -105,29 +101,5 @@ public class Recipe {
 
     public void setInstructionsForRecipe(String instructionsForRecipe) {
         this.instructionsForRecipe = instructionsForRecipe;
-    }
-
-    public ArrayList<String> getCuisineTypeOfRecipe() {
-        return cuisineTypeOfRecipe;
-    }
-
-    public void setCuisineTypeOfRecipe(ArrayList<String> cuisineTypeOfRecipe) {
-        this.cuisineTypeOfRecipe = cuisineTypeOfRecipe;
-    }
-
-    public ArrayList<String> getDishTypesOfRecipe() {
-        return dishTypesOfRecipe;
-    }
-
-    public void setDishTypesOfRecipe(ArrayList<String> dishTypesOfRecipe) {
-        this.dishTypesOfRecipe = dishTypesOfRecipe;
-    }
-
-    public ArrayList<String> getDietsOfRecipe() {
-        return dietsOfRecipe;
-    }
-
-    public void setDietsOfRecipe(ArrayList<String> dietsOfRecipe) {
-        this.dietsOfRecipe = dietsOfRecipe;
     }
 }

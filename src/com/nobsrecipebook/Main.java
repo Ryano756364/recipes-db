@@ -9,16 +9,23 @@ import java.util.Map;
 
 
 public class Main {
+    //Recipe keys in JSON data
+    String RECIPES_JSON_MAIN_KEY = "recipes";  //main key
+
     public static void main(String[] args) {
-        Datasource datasource = new Datasource();
-        openDataSource(datasource);
 
-        viewData(datasource);
+        //Test data
+        //Datasource datasource = new Datasource();
+        //openDataSource(datasource);
+        //viewData(datasource);  //make sure to pass in 'players_data' if using this again
+        //ArrayList<ContactClass> contactClassList = createClassObjectsWithData(datasource);
+        //viewClassData(contactClassList);
+        //closeDataSource(datasource);
 
-        ArrayList<ContactClass> contactClassList = createClassObjectsWithData(datasource);
-        viewClassData(contactClassList);
-
-        closeDataSource(datasource);
+        //Recipe data
+        Datasource recipeDataSource = new Datasource();
+        openDataSource(recipeDataSource);
+        closeDataSource(recipeDataSource);
     }
 
     public static void openDataSource(Datasource datasource){
@@ -29,9 +36,9 @@ public class Main {
         }
     }
 
-    public static void viewData(Datasource datasource){
+    public static void viewData(Datasource datasource, String keyName){
         JSONObject jsonObject = datasource.listAllContacts();
-        JSONArray jsonArray = (JSONArray) jsonObject.get("players_data");
+        JSONArray jsonArray = (JSONArray) jsonObject.get(keyName);
         for (Object object : jsonArray) {
             System.out.println(object);
         }

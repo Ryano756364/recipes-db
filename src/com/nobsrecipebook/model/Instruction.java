@@ -3,19 +3,19 @@ package com.nobsrecipebook.model;
 import java.util.ArrayList;
 
 public class Instruction {
-    private int id;
+    private int idPrimaryKey;
     private int recipeIdForeignKey;
     private int stepNumber;
-    private String descriptionOfInstructionStep;
-    private ArrayList<String> listOfIngredientsNeeded;
-    private ArrayList<String> listOfEquipmentNeeded;
+    private String descriptionOfStep;
+    private ArrayList<String> ingredientsNeeded;
+    private ArrayList<String> equipmentNeeded;
 
-    public int getId() {
-        return id;
+    public int getIdPrimaryKey() {
+        return idPrimaryKey;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdPrimaryKey(int idPrimaryKey) {
+        this.idPrimaryKey = idPrimaryKey;
     }
 
     public int getRecipeIdForeignKey() {
@@ -34,27 +34,27 @@ public class Instruction {
         this.stepNumber = stepNumber;
     }
 
-    public String getDescriptionOfInstructionStep() {
-        return descriptionOfInstructionStep;
+    public String getDescriptionOfStep() {
+        return descriptionOfStep;
     }
 
-    public void setDescriptionOfInstructionStep(String descriptionOfInstructionStep) {
-        this.descriptionOfInstructionStep = descriptionOfInstructionStep;
+    public void setDescriptionOfStep(String descriptionOfStep) {
+        this.descriptionOfStep = descriptionOfStep;
     }
 
-    public ArrayList<String> getListOfIngredientsNeeded() {
-        return listOfIngredientsNeeded;
+    public ArrayList<String> getIngredientsNeeded() {
+        return ingredientsNeeded;
     }
 
-    public void setListOfIngredientsNeeded(ArrayList<String> listOfIngredientsNeeded) {
-        this.listOfIngredientsNeeded = listOfIngredientsNeeded;
+    public void setIngredientsNeeded(ArrayList<String> ingredientsNeeded) {
+        this.ingredientsNeeded = ingredientsNeeded;
     }
 
-    public ArrayList<String> getListOfEquipmentNeeded() {
-        return listOfEquipmentNeeded;
+    public ArrayList<String> getEquipmentNeeded() {
+        return equipmentNeeded;
     }
 
-    public void setListOfEquipmentNeeded(ArrayList<String> listOfEquipmentNeeded) {
-        this.listOfEquipmentNeeded = listOfEquipmentNeeded;
+    public void setEquipmentNeeded(ArrayList<String> equipmentNeeded) {
+        this.equipmentNeeded = equipmentNeeded;
     }
 }
