@@ -1,5 +1,7 @@
 package com.nobsrecipebook.model;
 
+import java.math.BigDecimal;
+
 public class Recipe {
     //Fields
     private int idPrimaryKey;

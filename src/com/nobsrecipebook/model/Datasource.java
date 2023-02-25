@@ -45,13 +45,13 @@ public class Datasource {
 
 
     //Program methods
-    public JSONObject listAllContacts() {
+    public JSONObject listAllRecipes() {
         JSONParser parser = new JSONParser();
         try {
             //Object obj = parser.parse(new FileReader("C:\\Users\\rpode\\Documents\\Coding\\recipes-db\\src\\
             // com\\nobsrecipebook\\assets\\testdata.json"));  //delete when done with test
             Object obj = parser.parse(new FileReader("C:\\Users\\rpode\\Documents\\Coding\\recipes-db\\src\\" +
-                    "com\\nobsrecipebook\\assets\\testdata.json"));
+                    "com\\nobsrecipebook\\assets\\1000recipes.json"));
             return (JSONObject)obj;
         } catch (IOException | ParseException e) {
             throw new RuntimeException(e);
