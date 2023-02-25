@@ -2,8 +2,6 @@ package com.nobsrecipebook;
 import com.nobsrecipebook.model.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +20,7 @@ public class Main {
 
     //Level 3 Keys
     private static final String JSON_INGREDIENT_ID = "id";
+    private static final String JSON_INGREDIENT_AISLE = "aisle";
     private static final String JSON_INGREDIENT_NAME = "name";
     private static final String JSON_INGREDIENT_DESCRIPTION = "nameClean";
     private static final String JSON_INGREDIENT_AMOUNT = "amount";
@@ -72,7 +71,9 @@ public class Main {
         //viewRecipeClassData(RECIPE_OBJ_LIST);
         //viewCuisineClassData(CUISINE_OBJ_LIST);
         //viewDishTypeClassData(DISH_TYPE_OBJ_LIST);
-        viewDietClassData(DIET_OBJ_LIST);
+        //viewDietClassData(DIET_OBJ_LIST);
+        //viewIngredientClassData(INGREDIENT_OBJ_LIST);
+        //viewInstructionClassData(INSTRUCTION_OBJ_LIST);
         closeDataSource(recipeDataSource);
 
     }
@@ -157,12 +158,31 @@ public class Main {
             recipeObjectHolder.setSummaryOfRecipe((String) jsonObject2.get("summary"));
             recipeObjectHolder.setInstructionsForRecipe((String) jsonObject2.get("instructions"));
 
+            //These methods are where the filtering of JSON data takes place
             //Write to Cuisine Class
-            createCuisineClassObjectsWithJsonData(primaryKeyGenerator, RecipePrimaryKey, (JSONArray) jsonObject2.get(JSON_CUISINE_MAIN_KEY));
+            createCuisineClassObjectsWithJsonData(
+                    primaryKeyGenerator,
+                    RecipePrimaryKey,
+                    (JSONArray) jsonObject2.get(JSON_CUISINE_MAIN_KEY));
             //Write to Dish Type Class
-            createDishTypeClassObjectsWithJsonData(primaryKeyGenerator, RecipePrimaryKey, (JSONArray) jsonObject2.get(JSON_DISH_TYPE_MAIN_KEY));
+            createDishTypeClassObjectsWithJsonData(
+                    primaryKeyGenerator,
+                    RecipePrimaryKey,
+                    (JSONArray) jsonObject2.get(JSON_DISH_TYPE_MAIN_KEY));
             //Write to Diet Class
-            createDietClassObjectsWithJsonData(primaryKeyGenerator, RecipePrimaryKey, (JSONArray) jsonObject2.get(JSON_DIET_MAIN_KEY));
+            createDietClassObjectsWithJsonData(
+                    primaryKeyGenerator,
+                    RecipePrimaryKey,
+                    (JSONArray) jsonObject2.get(JSON_DIET_MAIN_KEY));
+            //Write to Ingredient Class
+            createIngredientClassObjectsWithJsonData(
+                    RecipePrimaryKey,
+                    (JSONArray) jsonObject2.get(JSON_INGREDIENT_MAIN_KEY));
+            //Write to Instruction Class
+            createInstructionClassObjectsWithJsonData(
+                    primaryKeyGenerator,
+                    RecipePrimaryKey,
+                    (JSONArray) jsonObject2.get(JSON_INSTRUCTION_MAIN_KEY));
 
             listToReturn.add(recipeObjectHolder);
             primaryKeyGenerator++;
@@ -258,9 +278,85 @@ public class Main {
     //End diet data handling
 
     //Ingredient data handling
+    public static void createIngredientClassObjectsWithJsonData(int foreignKey, JSONArray extendedIngredientArr) {
+        Ingredient ingredient = new Ingredient();
+        ingredient.setRecipeIdForeignKey(foreignKey);
+        for(Object o : extendedIngredientArr){
+            JSONObject jsonObject2 = new JSONObject((Map) o);
+            ingredient.setIdPrimaryKey(Math.toIntExact((Long) jsonObject2.get(JSON_INGREDIENT_ID)));
+            ingredient.setAisleOfIngredient((String) jsonObject2.get(JSON_INGREDIENT_AISLE));
+            ingredient.setNameOfIngredient((String) jsonObject2.get(JSON_INGREDIENT_NAME));
+            ingredient.setDescriptionOfIngredient((String) jsonObject2.get(JSON_INGREDIENT_DESCRIPTION));
+            ingredient.setAmountOfIngredientNeeded((Double) jsonObject2.get(JSON_INGREDIENT_AMOUNT));
+            ingredient.setUnitMeasurementOfIngredient((String) jsonObject2.get(JSON_INGREDIENT_UNIT));
+        }
+        INGREDIENT_OBJ_LIST.add(ingredient);
+    }
+    public static void viewIngredientClassData(ArrayList<Ingredient> ingredient){
+        for(Ingredient i : ingredient){
+            System.out.println("ID: " + i.getIdPrimaryKey());
+            System.out.println("Aisle: " + i.getAisleOfIngredient());
+            System.out.println("RecipeIdFk: " + i.getRecipeIdForeignKey());
+            System.out.println("Ingredient: " + i.getNameOfIngredient());
+            System.out.println("Description: " + i.getDescriptionOfIngredient());
+            System.out.println("Amount: " + i.getAmountOfIngredientNeeded());
+            System.out.println("Unit: " + i.getUnitMeasurementOfIngredient());
+        }
+    }
     //End ingredient data handling
 
     //Instruction data handling
+    public static void createInstructionClassObjectsWithJsonData(int primaryKey, int foreignKey, JSONArray instructionJsonArr) {
+        Instruction instruction = new Instruction();
+        instruction.setIdPrimaryKey(primaryKey);
+        instruction.setRecipeIdForeignKey(foreignKey);
+        for(Object analyzedInstructionElement : instructionJsonArr){
+            JSONObject jsonObject2 = new JSONObject((Map) analyzedInstructionElement);
+            JSONArray lineItems = (JSONArray) jsonObject2.get(JSON_INSTRUCTION_STEP_ARR);
+            for (Object o : lineItems){
+                JSONObject jsonObject3 = new JSONObject((Map) o);
+                instruction.setStepNumber(Math.toIntExact((Long) jsonObject3.get(JSON_INSTRUCTION_STEP_NUMBER)));
+                instruction.setDescriptionOfStep((String) jsonObject3.get(JSON_INSTRUCTION_STEP_DESC));
+
+                //Pull ingredient name from JSONObject and build to ArrayList<String>
+                ArrayList<String> ingredientList = new ArrayList<>();
+                JSONArray ingredientArr = (JSONArray) jsonObject3.get(JSON_INSTRUCTION_STEP_INGREDIENT_ARR);
+                for(Object i : ingredientArr){
+                    JSONObject jsonObject4 = new JSONObject((Map) i);
+                    ingredientList.add((String) jsonObject4.get(JSON_INSTRUCTION_STEP_INGREDIENT_NAME));
+                }
+                instruction.setIngredientsNeeded(ingredientList);
+
+                //Pull equipment name from JSONObject and build to ArrayList<String>
+                ArrayList<String> equipmentList = new ArrayList<>();
+                JSONArray equipmentArr = (JSONArray) jsonObject3.get(JSON_INSTRUCTION_STEP_EQUIPMENT_ARR);
+                for(Object e : equipmentArr){
+                    JSONObject jsonObject4 = new JSONObject((Map) e);
+                    equipmentList.add((String) jsonObject4.get(JSON_INSTRUCTION_STEP_EQUIPMENT_NAME));
+                }
+                instruction.setEquipmentNeeded(equipmentList);
+            }
+        }
+        INSTRUCTION_OBJ_LIST.add(instruction);
+    }
+    public static void viewInstructionClassData(ArrayList<Instruction> instruction){
+        for(Instruction i : instruction){
+            System.out.println("Instruction PK: " + i.getIdPrimaryKey());
+            System.out.println("Recipe FK: " + i.getRecipeIdForeignKey());
+            System.out.println("Step Number: " + i.getStepNumber());
+            System.out.println("Step description: " + i.getDescriptionOfStep());
+            if(i.getIngredientsNeeded() != null) {
+                for (String s : i.getIngredientsNeeded()) {
+                    System.out.println(s);
+                }
+            }
+            if(i.getEquipmentNeeded() != null){
+                for(String s : i.getEquipmentNeeded()){
+                    System.out.println(s);
+                }
+            }
+        }
+    }
     //End instruction data handling
 
     public static void viewRecipeClassData(ArrayList<Recipe> recipeObjectList){

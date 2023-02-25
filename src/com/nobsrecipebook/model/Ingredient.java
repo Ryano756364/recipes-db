@@ -2,10 +2,11 @@ package com.nobsrecipebook.model;
 public class Ingredient {
     //Fields
     private int idPrimaryKey;
+    private String aisleOfIngredient;
     private int recipeIdForeignKey;
     private String nameOfIngredient;
     private String descriptionOfIngredient;
-    private int amountOfIngredientNeeded;
+    private Double amountOfIngredientNeeded;
     private String unitMeasurementOfIngredient;
 
     //Getters and setters
@@ -15,6 +16,14 @@ public class Ingredient {
 
     public void setIdPrimaryKey(int idPrimaryKey) {
         this.idPrimaryKey = idPrimaryKey;
+    }
+
+    public String getAisleOfIngredient() {
+        return aisleOfIngredient;
+    }
+
+    public void setAisleOfIngredient(String aisleOfIngredient) {
+        this.aisleOfIngredient = aisleOfIngredient;
     }
 
     public int getRecipeIdForeignKey() {
@@ -41,11 +50,11 @@ public class Ingredient {
         this.descriptionOfIngredient = descriptionOfIngredient;
     }
 
-    public int getAmountOfIngredientNeeded() {
+    public Double getAmountOfIngredientNeeded() {
         return amountOfIngredientNeeded;
     }
 
-    public void setAmountOfIngredientNeeded(int amountOfIngredientNeeded) {
+    public void setAmountOfIngredientNeeded(Double amountOfIngredientNeeded) {
         this.amountOfIngredientNeeded = amountOfIngredientNeeded;
     }
 
