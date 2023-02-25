@@ -70,7 +70,9 @@ public class Main {
         openDataSource(recipeDataSource);
         RECIPE_OBJ_LIST = createRecipeClassObjectsWithData(recipeDataSource, JSON_RECIPE_MAIN_KEY);
         //viewRecipeClassData(RECIPE_OBJ_LIST);
-        viewCuisineClassData(CUISINE_OBJ_LIST);
+        //viewCuisineClassData(CUISINE_OBJ_LIST);
+        //viewDishTypeClassData(DISH_TYPE_OBJ_LIST);
+        viewDietClassData(DIET_OBJ_LIST);
         closeDataSource(recipeDataSource);
 
     }
@@ -156,7 +158,11 @@ public class Main {
             recipeObjectHolder.setInstructionsForRecipe((String) jsonObject2.get("instructions"));
 
             //Write to Cuisine Class
-            createCuisineClassObjectsWithJsonData(primaryKeyGenerator, RecipePrimaryKey, (JSONArray) jsonObject2.get("cuisines"));
+            createCuisineClassObjectsWithJsonData(primaryKeyGenerator, RecipePrimaryKey, (JSONArray) jsonObject2.get(JSON_CUISINE_MAIN_KEY));
+            //Write to Dish Type Class
+            createDishTypeClassObjectsWithJsonData(primaryKeyGenerator, RecipePrimaryKey, (JSONArray) jsonObject2.get(JSON_DISH_TYPE_MAIN_KEY));
+            //Write to Diet Class
+            createDietClassObjectsWithJsonData(primaryKeyGenerator, RecipePrimaryKey, (JSONArray) jsonObject2.get(JSON_DIET_MAIN_KEY));
 
             listToReturn.add(recipeObjectHolder);
             primaryKeyGenerator++;
@@ -194,9 +200,61 @@ public class Main {
     //End cuisine data handling
 
     //Dish type data handling
+    public static void createDishTypeClassObjectsWithJsonData(int primaryKey, int foreignKey, JSONArray dishTypeJsonArr) {
+        DishType dishType = new DishType();
+        ArrayList<String> holderDishTypeList = new ArrayList<>();
+
+        dishType.setIdPrimaryKey(primaryKey);
+        dishType.setRecipeIdForeignKey(foreignKey);
+        if (!dishTypeJsonArr.isEmpty()) {  //handles empty JSON array data
+            for (Object o : dishTypeJsonArr) {
+                holderDishTypeList.add((String) o);
+            }
+            dishType.setDishListTypes(holderDishTypeList);
+        }
+
+        DISH_TYPE_OBJ_LIST.add(dishType);
+    }
+    public static void viewDishTypeClassData(ArrayList<DishType> dishType){
+        for(DishType d : dishType){
+            System.out.println(d.getIdPrimaryKey());
+            System.out.println(d.getRecipeIdForeignKey());
+            if(d.getDishListTypes() != null){
+                for(String s : d.getDishListTypes()){
+                    System.out.println(s);
+                }
+            }
+        }
+    }
     //End dish type data handling
 
     //Diet data handling
+    public static void createDietClassObjectsWithJsonData(int primaryKey, int foreignKey, JSONArray dietJsonArr) {
+        Diet diet = new Diet();
+        ArrayList<String> holderDietList = new ArrayList<>();
+
+        diet.setIdPrimaryKey(primaryKey);
+        diet.setRecipeIdForeignKey(foreignKey);
+        if (!dietJsonArr.isEmpty()) {  //handles empty JSON array data
+            for (Object o : dietJsonArr) {
+                holderDietList.add((String) o);
+            }
+            diet.setDietListTypes(holderDietList);
+        }
+
+        DIET_OBJ_LIST.add(diet);
+    }
+    public static void viewDietClassData(ArrayList<Diet> diet){
+        for(Diet d : diet){
+            System.out.println(d.getIdPrimaryKey());
+            System.out.println(d.getRecipeIdForeignKey());
+            if(d.getDietListTypes() != null){
+                for(String s : d.getDietListTypes()){
+                    System.out.println(s);
+                }
+            }
+        }
+    }
     //End diet data handling
 
     //Ingredient data handling
