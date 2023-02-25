@@ -92,6 +92,8 @@ public class Recipe {
     }
 
     public void setSummaryOfRecipe(String summaryOfRecipe) {
+        summaryOfRecipe = summaryOfRecipe.replaceAll("<b>", "");
+        summaryOfRecipe = summaryOfRecipe.replaceAll("</b>", "");
         this.summaryOfRecipe = summaryOfRecipe;
     }
 
@@ -100,6 +102,12 @@ public class Recipe {
     }
 
     public void setInstructionsForRecipe(String instructionsForRecipe) {
+        instructionsForRecipe = instructionsForRecipe.replaceAll("<ol>", "");
+        instructionsForRecipe = instructionsForRecipe.replaceAll("</ol>", "");
+        instructionsForRecipe = instructionsForRecipe.replaceAll("<li>", "");
+        instructionsForRecipe = instructionsForRecipe.replaceAll("</li>", "");
+        instructionsForRecipe = instructionsForRecipe.replaceAll("<p>", "");
+        instructionsForRecipe = instructionsForRecipe.replaceAll("</p>", "");
         this.instructionsForRecipe = instructionsForRecipe;
     }
 }
