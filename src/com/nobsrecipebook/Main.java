@@ -4,8 +4,6 @@ import com.nobsrecipebook.model.Datasource;
 import com.nobsrecipebook.model.Recipe;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +45,7 @@ public class Main {
         }
     }
 
-    public static void viewData(Datasource datasource, String keyName){
+    public static void viewData(Datasource datasource, String keyName){  //used for testing/production purposes
         JSONObject jsonObject = datasource.listAllRecipes();
         JSONArray jsonArray = (JSONArray) jsonObject.get(keyName);
         for (Object object : jsonArray) {

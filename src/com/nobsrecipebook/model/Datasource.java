@@ -11,11 +11,11 @@ public class Datasource {
 
     //Fields
     public static final String RECIPE_DB_NAME = "recipesDb.db";  //recipe
-    public static final String DB_NAME = "jsonPracticeDb.db";  //test
+    //public static final String DB_NAME = "jsonPracticeDb.db";  //test
     public static final String RECIPE_CONNECTION_STRING = "jdbc:sqlite:C:\\Users\\rpode\\Documents\\" +
             "Coding\\recipes-db\\src\\com\\nobsrecipebook\\database\\" + RECIPE_DB_NAME;  //recipe
-    public static final String CONNECTION_STRING = "jdbc:sqlite:C:\\Users\\rpode\\Documents\\" +
-            "Coding\\recipes-db\\src\\com\\nobsrecipebook\\database\\" + DB_NAME; //test
+    //public static final String CONNECTION_STRING = "jdbc:sqlite:C:\\Users\\rpode\\Documents\\" +
+    //        "Coding\\recipes-db\\src\\com\\nobsrecipebook\\database\\" + DB_NAME; //test
 
 
     //Connection control
