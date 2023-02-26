@@ -24,8 +24,16 @@ public class Diet {
         this.recipeIdForeignKey = recipeIdForeignKey;
     }
 
-    public ArrayList<String> getDietListTypes() {
-        return dietListTypes;
+    public String getDietListTypesAsString() {
+        StringBuilder stringToReturn = new StringBuilder();
+
+        for(String t : dietListTypes){
+            if (t != null) {
+                stringToReturn.append(t).append(", ");
+            }
+        }
+        stringToReturn.setLength(stringToReturn.length()-2);
+        return stringToReturn.toString();
     }
 
     public void setDietListTypes(ArrayList<String> dietListTypes) {

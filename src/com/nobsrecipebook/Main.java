@@ -76,7 +76,8 @@ public class Main {
         openDataDestination(datadestination);
         //sendJavaRecipeClassToSQL(datadestination);
         //sendCuisineClassToSQL(datadestination);
-        sendDishTypeClassToSQL(datadestination);
+        //sendDishTypeClassToSQL(datadestination);
+        sendDietClassToSQL(datadestination);
         closeDataDestination(datadestination);
     }
 
@@ -330,11 +331,19 @@ public class Main {
         for(Diet d : diet){
             System.out.println(d.getIdPrimaryKey());
             System.out.println(d.getRecipeIdForeignKey());
-            if(d.getDietListTypes() != null){
-                for(String s : d.getDietListTypes()){
-                    System.out.println(s);
-                }
+            if(d.getDietListTypesAsString() != null){
+                System.out.println(d.getDietListTypesAsString());
+
             }
+        }
+    }
+    public static void sendDietClassToSQL(Datadestination datadestination){
+        for(Diet d : DIET_OBJ_LIST){
+            datadestination.insertDiet(
+                    d.getIdPrimaryKey(),
+                    d.getRecipeIdForeignKey(),
+                    d.getDietListTypesAsString()
+            );
         }
     }
     //End diet data handling

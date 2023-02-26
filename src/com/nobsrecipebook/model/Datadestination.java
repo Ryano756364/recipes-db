@@ -71,7 +71,7 @@ public class Datadestination {
             insertIntoRecipe = conn.prepareStatement(INSERT_RECIPE);  //add in 'Statement.RETURN_GENERATED_KEYS' if parameter needed to return PK
             insertIntoCuisine = conn.prepareStatement(INSERT_CUISINE);
             insertIntoDishType = conn.prepareStatement(INSERT_DISH_TYPE);
-            //insertIntoDiet = conn.prepareStatement(INSERT_DIET);
+            insertIntoDiet = conn.prepareStatement(INSERT_DIET);
             //insertIntoIngredient = conn.prepareStatement(INSERT_INGREDIENT);
             //insertIntoInstruction = conn.prepareStatement(INSERT_INSTRUCTION);
             queryRecipe = conn.prepareStatement(QUERY_RECIPE);
@@ -127,7 +127,8 @@ public class Datadestination {
             COLUMN_CUISINE_RECIPE_ID + ", " + COLUMN_CUISINE_TYPE + ") VALUES(?, ?, ?)";
     public static final String INSERT_DISH_TYPE = "INSERT INTO " + TABLE_DISH_TYPE + "(" + COLUMN_DISH_TYPE_ID + "," +
             COLUMN_DISH_TYPE_RECIPE_ID + ", " + COLUMN_DISH_TYPE + ") VALUES(?, ?, ?)";
-    public static final String INSERT_DIET = "";
+    public static final String INSERT_DIET = "INSERT INTO " + TABLE_DIET + "(" + COLUMN_DIET_ID + ", " +
+            COLUMN_DIET_RECIPE_ID + ", " + COLUMN_DIET + ") VALUES(?, ?, ?)";
     public static final String INSERT_INGREDIENT = "";
     public static final String INSERT_INSTRUCTION = "";
     //End SQL insert statements
@@ -228,6 +229,37 @@ public class Datadestination {
             }
         } catch (SQLException e){
             System.out.println("Insert dish type exception: " + e.getMessage());
+            try {
+                System.out.println("Performing rollback");
+                conn.rollback();
+            } catch (SQLException e2){
+                System.out.println("Error on the rollback: " + e.getMessage());
+            }
+        } finally {
+            try {
+                //System.out.println("Resetting default commit behavior.");  //Use for testing purposes
+                conn.setAutoCommit(true);  //good practice to turn transaction back on immediately after in same transaction where it was turned off
+            } catch (SQLException e){
+                System.out.println("Couldn't reset auto-commit: " + e.getMessage());
+            }
+        }
+    }
+
+    public void insertDiet(int id, int recipeId, String dietListAsString){
+        try {
+            conn.setAutoCommit(false);
+
+            insertIntoDiet.setInt(1, id);
+            insertIntoDiet.setInt(2, recipeId);
+            insertIntoDiet.setString(3, dietListAsString);
+            int affectedRows = insertIntoDiet.executeUpdate();
+            if (affectedRows == 1) {
+                conn.commit();
+            } else {
+                throw new SQLException("The diet insert failed");
+            }
+        } catch (SQLException e){
+            System.out.println("Insert diet exception: " + e.getMessage());
             try {
                 System.out.println("Performing rollback");
                 conn.rollback();
