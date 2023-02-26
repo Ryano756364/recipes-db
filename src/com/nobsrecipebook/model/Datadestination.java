@@ -173,8 +173,8 @@ public class Datadestination {
             }
         } finally {
             try {
-                System.out.println("Resetting default commit behavior.");
-                conn.setAutoCommit(true);  //good practice to turn transaction back on immediately after in same transaction where it was turned off
+                //System.out.println("Resetting default commit behavior.");  //Use for testing purposes
+                conn.setAutoCommit(true);  //good practice to turn transaction back on immediately in same transaction where it was turned off
             } catch (SQLException e){
                 System.out.println("Couldn't reset auto-commit: " + e.getMessage());
             }

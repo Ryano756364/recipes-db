@@ -3,6 +3,7 @@ import com.nobsrecipebook.model.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +63,7 @@ public class Main {
         openDataSource(recipeDataSource);
         RECIPE_OBJ_LIST = createRecipeClassObjectsWithData(recipeDataSource, JSON_RECIPE_MAIN_KEY);
         //viewRecipeClassData(RECIPE_OBJ_LIST);
-        //viewCuisineClassData(CUISINE_OBJ_LIST);
+        viewCuisineClassData(CUISINE_OBJ_LIST);
         //viewDishTypeClassData(DISH_TYPE_OBJ_LIST);
         //viewDietClassData(DIET_OBJ_LIST);
         //viewIngredientClassData(INGREDIENT_OBJ_LIST);
@@ -72,7 +73,8 @@ public class Main {
         //Java class objects -> SQL Database
         Datadestination datadestination = new Datadestination();
         openDataDestination(datadestination);
-        sendJavaRecipeClassToSQL(datadestination);
+        //sendJavaRecipeClassToSQL(datadestination);
+        sendCuisineClassToSQL(datadestination);
         closeDataDestination(datadestination);
     }
 
@@ -240,6 +242,8 @@ public class Main {
                 holderCuisineList.add((String) o);
             }
             cuisine.setCuisineListTypes(holderCuisineList);
+        } else {
+            cuisine.setCuisineListTypes(new ArrayList<>(List.of("none")));  //avoids bad practice to have null in collection
         }
 
         CUISINE_OBJ_LIST.add(cuisine);
@@ -248,11 +252,18 @@ public class Main {
         for(Cuisine c : cuisine){
             System.out.println(c.getIdPrimaryKey());
             System.out.println(c.getRecipeIdForeignKey());
-            if(c.getCuisineListTypes() != null){
-                for(String s : c.getCuisineListTypes()){
-                    System.out.println(s);
-                }
+            if(c.getCuisineListAsString() != null){
+                System.out.println(c.getCuisineListAsString());
             }
+        }
+    }
+    public static void sendCuisineClassToSQL(Datadestination datadestination){
+        for(Cuisine c : CUISINE_OBJ_LIST){
+            datadestination.insertCuisine(
+                    c.getIdPrimaryKey(),
+                    c.getRecipeIdForeignKey(),
+                    c.getCuisineListAsString()
+            );
         }
     }
     //End cuisine data handling

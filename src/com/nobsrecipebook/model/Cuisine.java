@@ -24,8 +24,18 @@ public class Cuisine {
         this.recipeIdForeignKey = recipeIdForeignKey;
     }
 
-    public ArrayList<String> getCuisineListTypes() {
-        return cuisineListTypes;
+    public String getCuisineListAsString() {
+        StringBuilder stringToReturn = new StringBuilder();
+
+        //no performance difference with concatenation vs builder
+        for(String t : cuisineListTypes){
+            if (t != null) {
+                stringToReturn.append(t).append(", ");
+            }
+        }
+        stringToReturn.setLength(stringToReturn.length()-2);
+        System.out.println(stringToReturn);
+        return stringToReturn.toString();
     }
 
     public void setCuisineListTypes(ArrayList<String> cuisineListTypes) {
