@@ -45,13 +45,6 @@ public class Main {
     private static ArrayList<Ingredient> INGREDIENT_OBJ_LIST = new ArrayList<>();
     private static ArrayList<Instruction> INSTRUCTION_OBJ_LIST = new ArrayList<>();
 
-    //SQL Table Names
-    private static final String RECIPE_TABLE_NAME_IN_SQL = "recipe";
-    private static final String CUISINE_TABLE_NAME_IN_SQL = "cuisine";
-    private static final String DISHTYPE_TABLE_NAME_IN_SQL = "dish_type";
-    private static final String DIET_TABLE_NAME_IN_SQL = "diet";
-    private static final String INGREDIENT_TABLE_NAME_IN_SQL = "ingredient";
-    private static final String INSTRUCTION_TABLE_NAME_IN_SQL = "instruction";
 
 
     public static void main(String[] args) {
@@ -64,25 +57,38 @@ public class Main {
         //viewClassData(contactClassList);
         //closeDataSource(datasource);
 
-        //Recipe data
-        Datasource recipeDataSource = new Datasource();
-        openDataSource(recipeDataSource);
-        RECIPE_OBJ_LIST = createRecipeClassObjectsWithData(recipeDataSource, JSON_RECIPE_MAIN_KEY);
+        //JSON File -> Java class objects
+        //Datasource recipeDataSource = new Datasource();
+        //openDataSource(recipeDataSource);
+        //RECIPE_OBJ_LIST = createRecipeClassObjectsWithData(recipeDataSource, JSON_RECIPE_MAIN_KEY);
         //viewRecipeClassData(RECIPE_OBJ_LIST);
         //viewCuisineClassData(CUISINE_OBJ_LIST);
         //viewDishTypeClassData(DISH_TYPE_OBJ_LIST);
         //viewDietClassData(DIET_OBJ_LIST);
         //viewIngredientClassData(INGREDIENT_OBJ_LIST);
         //viewInstructionClassData(INSTRUCTION_OBJ_LIST);
-        closeDataSource(recipeDataSource);
+        //closeDataSource(recipeDataSource);
 
+        //Java class objects -> SQL Database
+        Datadestination datadestination = new Datadestination();
+        openDataDestination(datadestination);
+        datadestination.insertCuisine(1, 3, "Chinese");
+        closeDataDestination(datadestination);
     }
 
+    //Open database connections
     public static void openDataSource(Datasource datasource){
         if (!datasource.open()) {
             System.out.println("\nCannot open datasource");
         } else {
             System.out.println("\nDatasource open!");
+        }
+    }
+    public static void openDataDestination(Datadestination dataDestination){
+        if (!dataDestination.open()) {
+            System.out.println("\nCannot open data destination");
+        } else {
+            System.out.println("\nData destination open!");
         }
     }
 
@@ -376,7 +382,9 @@ public class Main {
     }
     //End Recipe Data
 
+    //Close database connections
     public static void closeDataSource(Datasource datasource){
         datasource.close();
     }
+    public static void closeDataDestination(Datadestination datadestination){ datadestination.close(); }
 }
