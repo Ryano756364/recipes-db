@@ -35,7 +35,7 @@ public class Datasource {
         try {
             if (conn != null) {
                 conn.close();
-                System.out.println("\nConnection successfully closed!");
+                System.out.println("Datasource closed.");
             }
         } catch (SQLException e) {
             System.out.println("\nCouldn't close connection -> " + e);

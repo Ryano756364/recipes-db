@@ -2,8 +2,9 @@ package com.nobsrecipebook;
 import com.nobsrecipebook.model.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +64,7 @@ public class Main {
         openDataSource(recipeDataSource);
         RECIPE_OBJ_LIST = createRecipeClassObjectsWithData(recipeDataSource, JSON_RECIPE_MAIN_KEY);
         //viewRecipeClassData(RECIPE_OBJ_LIST);
-        viewCuisineClassData(CUISINE_OBJ_LIST);
+        //viewCuisineClassData(CUISINE_OBJ_LIST);
         //viewDishTypeClassData(DISH_TYPE_OBJ_LIST);
         //viewDietClassData(DIET_OBJ_LIST);
         //viewIngredientClassData(INGREDIENT_OBJ_LIST);
@@ -74,7 +75,8 @@ public class Main {
         Datadestination datadestination = new Datadestination();
         openDataDestination(datadestination);
         //sendJavaRecipeClassToSQL(datadestination);
-        sendCuisineClassToSQL(datadestination);
+        //sendCuisineClassToSQL(datadestination);
+        sendDishTypeClassToSQL(datadestination);
         closeDataDestination(datadestination);
     }
 
@@ -280,6 +282,8 @@ public class Main {
                 holderDishTypeList.add((String) o);
             }
             dishType.setDishListTypes(holderDishTypeList);
+        } else {
+            dishType.setDishListTypes(new ArrayList<>(List.of("none")));  //avoids bad practice to have null in collection
         }
 
         DISH_TYPE_OBJ_LIST.add(dishType);
@@ -288,11 +292,18 @@ public class Main {
         for(DishType d : dishType){
             System.out.println(d.getIdPrimaryKey());
             System.out.println(d.getRecipeIdForeignKey());
-            if(d.getDishListTypes() != null){
-                for(String s : d.getDishListTypes()){
-                    System.out.println(s);
-                }
+            if(d.getDishListTypesAsString() != null){
+                System.out.println(d.getDishListTypesAsString());
             }
+        }
+    }
+    public static void sendDishTypeClassToSQL(Datadestination datadestination){
+        for(DishType d : DISH_TYPE_OBJ_LIST){
+            datadestination.insertDishType(
+                d.getIdPrimaryKey(),
+                d.getRecipeIdForeignKey(),
+                d.getDishListTypesAsString()
+            );
         }
     }
     //End dish type data handling
@@ -309,6 +320,8 @@ public class Main {
                 holderDietList.add((String) o);
             }
             diet.setDietListTypes(holderDietList);
+        }else {
+            diet.setDietListTypes(new ArrayList<>(List.of("none")));  //avoids bad practice to have null in collection
         }
 
         DIET_OBJ_LIST.add(diet);

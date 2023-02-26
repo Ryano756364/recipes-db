@@ -70,7 +70,7 @@ public class Datadestination {
             conn = DriverManager.getConnection(CONNECTION_STRING);
             insertIntoRecipe = conn.prepareStatement(INSERT_RECIPE);  //add in 'Statement.RETURN_GENERATED_KEYS' if parameter needed to return PK
             insertIntoCuisine = conn.prepareStatement(INSERT_CUISINE);
-            //insertIntoDishType = conn.prepareStatement(INSERT_DISH_TYPE);
+            insertIntoDishType = conn.prepareStatement(INSERT_DISH_TYPE);
             //insertIntoDiet = conn.prepareStatement(INSERT_DIET);
             //insertIntoIngredient = conn.prepareStatement(INSERT_INGREDIENT);
             //insertIntoInstruction = conn.prepareStatement(INSERT_INSTRUCTION);
@@ -107,7 +107,7 @@ public class Datadestination {
             }
             if (conn != null) {
                 conn.close();
-                System.out.println("\nData destination connection successfully closed!");
+                System.out.println("Data destination closed!");
             }
         } catch (SQLException e) {
             System.out.println("\nCouldn't close data destination connection -> " + e);
@@ -125,7 +125,8 @@ public class Datadestination {
             COLUMN_RECIPE_INSTRUCTIONS + ") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String INSERT_CUISINE = "INSERT INTO " + TABLE_CUISINE + "(" + COLUMN_CUISINE_ID + ", " +
             COLUMN_CUISINE_RECIPE_ID + ", " + COLUMN_CUISINE_TYPE + ") VALUES(?, ?, ?)";
-    public static final String INSERT_DISH_TYPE = "";
+    public static final String INSERT_DISH_TYPE = "INSERT INTO " + TABLE_DISH_TYPE + "(" + COLUMN_DISH_TYPE_ID + "," +
+            COLUMN_DISH_TYPE_RECIPE_ID + ", " + COLUMN_DISH_TYPE + ") VALUES(?, ?, ?)";
     public static final String INSERT_DIET = "";
     public static final String INSERT_INGREDIENT = "";
     public static final String INSERT_INSTRUCTION = "";
@@ -204,12 +205,45 @@ public class Datadestination {
             }
         } finally {
             try {
-                System.out.println("Resetting default commit behavior.");
+                //System.out.println("Resetting default commit behavior.");  //Use for testing purposes
                 conn.setAutoCommit(true);  //good practice to turn transaction back on immediately after in same transaction where it was turned off
             } catch (SQLException e){
                 System.out.println("Couldn't reset auto-commit: " + e.getMessage());
             }
         }
     }
+
+    public void insertDishType(int id, int recipeId, String dishTypeListAsString){
+        try {
+            conn.setAutoCommit(false);
+
+            insertIntoDishType.setInt(1, id);
+            insertIntoDishType.setInt(2, recipeId);
+            insertIntoDishType.setString(3, dishTypeListAsString);
+            int affectedRows = insertIntoDishType.executeUpdate();
+            if (affectedRows == 1) {
+                conn.commit();
+            } else {
+                throw new SQLException("The dish type insert failed");
+            }
+        } catch (SQLException e){
+            System.out.println("Insert dish type exception: " + e.getMessage());
+            try {
+                System.out.println("Performing rollback");
+                conn.rollback();
+            } catch (SQLException e2){
+                System.out.println("Error on the rollback: " + e.getMessage());
+            }
+        } finally {
+            try {
+                //System.out.println("Resetting default commit behavior.");  //Use for testing purposes
+                conn.setAutoCommit(true);  //good practice to turn transaction back on immediately after in same transaction where it was turned off
+            } catch (SQLException e){
+                System.out.println("Couldn't reset auto-commit: " + e.getMessage());
+            }
+        }
+    }
+
+
     //End SQL insert methods
 }

@@ -34,7 +34,6 @@ public class Cuisine {
             }
         }
         stringToReturn.setLength(stringToReturn.length()-2);
-        System.out.println(stringToReturn);
         return stringToReturn.toString();
     }
 

@@ -24,8 +24,16 @@ public class DishType {
         this.recipeIdForeignKey = recipeIdForeignKey;
     }
 
-    public ArrayList<String> getDishListTypes() {
-        return dishListTypes;
+    public String getDishListTypesAsString() {
+        StringBuilder stringToReturn = new StringBuilder();
+
+        for(String t : dishListTypes){
+            if (t != null) {
+                stringToReturn.append(t).append(", ");
+            }
+        }
+        stringToReturn.setLength(stringToReturn.length()-2);
+        return stringToReturn.toString();
     }
 
     public void setDishListTypes(ArrayList<String> dishListTypes) {
