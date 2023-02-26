@@ -52,29 +52,23 @@ public class Datadestination {
     public static final String COLUMN_INSTRUCTION = "instruction";
     public static final String COLUMN_INSTRUCTION_INGREDIENT_NEEDED = "ingredient_needed";
     public static final String COLUMN_INSTRUCTION_EQUIPMENT_NEEDED = "equipment_needed";
-
-    public static final String QUERY_RECIPE = "SELECT " + COLUMN_RECIPE_ID + " FROM " + TABLE_RECIPE + " WHERE " +
-            COLUMN_RECIPE_TITLE + " = ?";  //This looks for duplicate recipes based upon the recipe name
-
     //End database blueprint fields
 
 
     //Connection control
     private Connection conn;
-
     private PreparedStatement insertIntoRecipe;
     private PreparedStatement insertIntoCuisine;
     private PreparedStatement insertIntoDishType;
     private PreparedStatement insertIntoDiet;
     private PreparedStatement insertIntoIngredient;
     private PreparedStatement insertIntoInstruction;
-
     private PreparedStatement queryRecipe;
 
     public boolean open() {
         try {
             conn = DriverManager.getConnection(CONNECTION_STRING);
-            //insertIntoRecipe = conn.prepareStatement(INSERT_RECIPE, Statement.RETURN_GENERATED_KEYS);
+            insertIntoRecipe = conn.prepareStatement(INSERT_RECIPE);  //add in 'Statement.RETURN_GENERATED_KEYS' if parameter needed to return PK
             insertIntoCuisine = conn.prepareStatement(INSERT_CUISINE);
             //insertIntoDishType = conn.prepareStatement(INSERT_DISH_TYPE);
             //insertIntoDiet = conn.prepareStatement(INSERT_DIET);
@@ -128,7 +122,7 @@ public class Datadestination {
             COLUMN_RECIPE_IS_VEGETARIAN + ", " + COLUMN_RECIPE_IS_VEGAN + ", " + COLUMN_RECIPE_IS_GLUTEN_FREE + ", " +
             COLUMN_RECIPE_IS_DAIRY_FREE + ", " + COLUMN_RECIPE_IS_VERY_POPULAR + ", " + COLUMN_RECIPE_TITLE + ", " +
             COLUMN_RECIPE_SOURCE_URL + ", " + COLUMN_RECIPE_IMAGE_URL + ", " + COLUMN_RECIPE_SUMMARY + ", " +
-            COLUMN_RECIPE_INSTRUCTIONS + ") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            COLUMN_RECIPE_INSTRUCTIONS + ") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String INSERT_CUISINE = "INSERT INTO " + TABLE_CUISINE + "(" + COLUMN_CUISINE_ID + ", " +
             COLUMN_CUISINE_RECIPE_ID + ", " + COLUMN_CUISINE_TYPE + ") VALUES(?, ?, ?)";
     public static final String INSERT_DISH_TYPE = "";
@@ -138,27 +132,51 @@ public class Datadestination {
     //End SQL insert statements
 
 
+    //SQL query statements
+    public static final String QUERY_RECIPE = "SELECT " + COLUMN_RECIPE_ID + " FROM " + TABLE_RECIPE + " WHERE " +
+            COLUMN_RECIPE_TITLE + " = ?";  //This looks for duplicate recipes based upon the recipe name
+    //End SQL query statements
+
+
     //SQL insert methods
-    public int insertRecipe(int id) throws SQLException {
+    public void insertRecipe(int id, boolean isVegetarian, boolean isVegan, boolean isGlutenFree, boolean isDairyFree,
+                            boolean isVeryPopular, String title, String source_url, String image_url, String summary,
+                            String instructions) {
+        try {
+            conn.setAutoCommit(false);
 
-        queryRecipe.setInt(1, id);
-        ResultSet results = queryRecipe.executeQuery(); //sees if recipe already exists...
-        if(results.next()){
-            return results.getInt(1);  //...and if it does, return that id already on file, it's in column 1 so that's why we use that
-        } else {
-            // Insert recipe because it's currently not on file
             insertIntoRecipe.setInt(1, id);
+            insertIntoRecipe.setBoolean(2, isVegetarian);  //Automatically sends as BIT or BOOLEAN.(very cool).
+            insertIntoRecipe.setBoolean(3, isVegan);
+            insertIntoRecipe.setBoolean(4, isGlutenFree);
+            insertIntoRecipe.setBoolean(5,isDairyFree);
+            insertIntoRecipe.setBoolean(6, isVeryPopular);
+            insertIntoRecipe.setString(7, title);
+            insertIntoRecipe.setString(8, source_url);
+            insertIntoRecipe.setString(9, image_url);
+            insertIntoRecipe.setString(10, summary);
+            insertIntoRecipe.setString(11, instructions);
+
             int affectedRows = insertIntoRecipe.executeUpdate();
-
-            if(affectedRows != 1){
-                throw new SQLException("Couldn't insert recipe!");
-            }
-
-            ResultSet generatedKeys = insertIntoRecipe.getGeneratedKeys();
-            if(generatedKeys.next()){
-                return generatedKeys.getInt(1);
+            if (affectedRows == 1) {
+                conn.commit();
             } else {
-                throw new SQLException("Couldn't get id for new recipe");
+                throw new SQLException("The recipe insert failed");
+            }
+        } catch (SQLException e){
+            System.out.println("Insert recipe exception: " + e.getMessage());
+            try {
+                System.out.println("Performing rollback");
+                conn.rollback();
+            } catch (SQLException e2){
+                System.out.println("Error on the rollback: " + e.getMessage());
+            }
+        } finally {
+            try {
+                System.out.println("Resetting default commit behavior.");
+                conn.setAutoCommit(true);  //good practice to turn transaction back on immediately after in same transaction where it was turned off
+            } catch (SQLException e){
+                System.out.println("Couldn't reset auto-commit: " + e.getMessage());
             }
         }
     }

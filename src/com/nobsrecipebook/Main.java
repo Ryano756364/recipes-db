@@ -58,21 +58,21 @@ public class Main {
         //closeDataSource(datasource);
 
         //JSON File -> Java class objects
-        //Datasource recipeDataSource = new Datasource();
-        //openDataSource(recipeDataSource);
-        //RECIPE_OBJ_LIST = createRecipeClassObjectsWithData(recipeDataSource, JSON_RECIPE_MAIN_KEY);
+        Datasource recipeDataSource = new Datasource();
+        openDataSource(recipeDataSource);
+        RECIPE_OBJ_LIST = createRecipeClassObjectsWithData(recipeDataSource, JSON_RECIPE_MAIN_KEY);
         //viewRecipeClassData(RECIPE_OBJ_LIST);
         //viewCuisineClassData(CUISINE_OBJ_LIST);
         //viewDishTypeClassData(DISH_TYPE_OBJ_LIST);
         //viewDietClassData(DIET_OBJ_LIST);
         //viewIngredientClassData(INGREDIENT_OBJ_LIST);
         //viewInstructionClassData(INSTRUCTION_OBJ_LIST);
-        //closeDataSource(recipeDataSource);
+        closeDataSource(recipeDataSource);
 
         //Java class objects -> SQL Database
         Datadestination datadestination = new Datadestination();
         openDataDestination(datadestination);
-        datadestination.insertCuisine(1, 3, "Chinese");
+        sendJavaRecipeClassToSQL(datadestination);
         closeDataDestination(datadestination);
     }
 
@@ -194,6 +194,38 @@ public class Main {
             primaryKeyGenerator++;
         }
         return listToReturn;
+    }
+    public static void viewRecipeClassData(ArrayList<Recipe> recipeObjectList){
+        for(Recipe r : recipeObjectList){
+            System.out.println(r.getIdPrimaryKey());
+            System.out.println(r.isRecipeVegetarian());
+            System.out.println(r.isRecipeVegan());
+            System.out.println(r.isRecipeGlutenFree());
+            System.out.println(r.isRecipeDairyFree());
+            System.out.println(r.isRecipeVeryPopular());
+            System.out.println(r.getTitleOfRecipe());
+            System.out.println(r.getSourceUrlOfRecipe());
+            System.out.println(r.getImageUrlOfRecipe());
+            System.out.println(r.getSummaryOfRecipe());
+            System.out.println(r.getInstructionsForRecipe());
+        }
+    }
+    public static void sendJavaRecipeClassToSQL(Datadestination datadestination){
+        for(Recipe r : RECIPE_OBJ_LIST){
+            datadestination.insertRecipe(
+                    r.getIdPrimaryKey(),
+                    r.isRecipeVegetarian(),
+                    r.isRecipeVegan(),
+                    r.isRecipeGlutenFree(),
+                    r.isRecipeDairyFree(),
+                    r.isRecipeVeryPopular(),
+                    r.getTitleOfRecipe(),
+                    r.getSourceUrlOfRecipe(),
+                    r.getImageUrlOfRecipe(),
+                    r.getSummaryOfRecipe(),
+                    r.getInstructionsForRecipe()
+            );
+        }
     }
 
     //Cuisine data handling
@@ -364,23 +396,7 @@ public class Main {
         }
     }
     //End instruction data handling
-
-    public static void viewRecipeClassData(ArrayList<Recipe> recipeObjectList){
-        for(Recipe r : recipeObjectList){
-            System.out.println(r.getIdPrimaryKey());
-            System.out.println(r.isRecipeVegetarian());
-            System.out.println(r.isRecipeVegan());
-            System.out.println(r.isRecipeGlutenFree());
-            System.out.println(r.isRecipeDairyFree());
-            System.out.println(r.isRecipeVeryPopular());
-            System.out.println(r.getTitleOfRecipe());
-            System.out.println(r.getSourceUrlOfRecipe());
-            System.out.println(r.getImageUrlOfRecipe());
-            System.out.println(r.getSummaryOfRecipe());
-            System.out.println(r.getInstructionsForRecipe());
-        }
-    }
-    //End Recipe Data
+    //End recipe data
 
     //Close database connections
     public static void closeDataSource(Datasource datasource){
