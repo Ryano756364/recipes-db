@@ -1,5 +1,4 @@
 package com.nobsrecipebook.model;
-
 import java.sql.*;
 
 public class Datadestination {
@@ -49,6 +48,7 @@ public class Datadestination {
     private static final String TABLE_INSTRUCTION = "instruction";
     public static final String COLUMN_INSTRUCTION_ID = "id";
     public static final String COLUMN_INSTRUCTION_RECIPE_ID = "recipe_id";
+    public static final String COLUMN_INSTRUCTION_STEP_NUMBER = "step_number";
     public static final String COLUMN_INSTRUCTION = "instruction";
     public static final String COLUMN_INSTRUCTION_INGREDIENT_NEEDED = "ingredient_needed";
     public static final String COLUMN_INSTRUCTION_EQUIPMENT_NEEDED = "equipment_needed";
@@ -72,8 +72,8 @@ public class Datadestination {
             insertIntoCuisine = conn.prepareStatement(INSERT_CUISINE);
             insertIntoDishType = conn.prepareStatement(INSERT_DISH_TYPE);
             insertIntoDiet = conn.prepareStatement(INSERT_DIET);
-            //insertIntoIngredient = conn.prepareStatement(INSERT_INGREDIENT);
-            //insertIntoInstruction = conn.prepareStatement(INSERT_INSTRUCTION);
+            insertIntoIngredient = conn.prepareStatement(INSERT_INGREDIENT);
+            insertIntoInstruction = conn.prepareStatement(INSERT_INSTRUCTION);
             queryRecipe = conn.prepareStatement(QUERY_RECIPE);
             return true;
         } catch (SQLException e) {
@@ -129,8 +129,13 @@ public class Datadestination {
             COLUMN_DISH_TYPE_RECIPE_ID + ", " + COLUMN_DISH_TYPE + ") VALUES(?, ?, ?)";
     public static final String INSERT_DIET = "INSERT INTO " + TABLE_DIET + "(" + COLUMN_DIET_ID + ", " +
             COLUMN_DIET_RECIPE_ID + ", " + COLUMN_DIET + ") VALUES(?, ?, ?)";
-    public static final String INSERT_INGREDIENT = "";
-    public static final String INSERT_INSTRUCTION = "";
+    public static final String INSERT_INGREDIENT = "INSERT INTO " + TABLE_INGREDIENT + "(" + COLUMN_INGREDIENT_ID + ", " +
+            COLUMN_INGREDIENT_RECIPE_ID + ", " + COLUMN_INGREDIENT + ", " + COLUMN_INGREDIENT_DESCRIPTION + ", " +
+            COLUMN_INGREDIENT_AMOUNT + ", " + COLUMN_INGREDIENT_UNIT_OF_AMOUNT + ") VALUES(?, ?, ?, ?, ?, ?)";
+    public static final String INSERT_INSTRUCTION = "INSERT INTO " + TABLE_INSTRUCTION + "(" + COLUMN_INSTRUCTION_ID + ", " +
+            COLUMN_INSTRUCTION_RECIPE_ID + ", " + COLUMN_INSTRUCTION_STEP_NUMBER + ", " + COLUMN_INSTRUCTION + ", " +
+            COLUMN_INSTRUCTION_INGREDIENT_NEEDED + ", " + COLUMN_INSTRUCTION_EQUIPMENT_NEEDED + ") " +
+            "VALUES(?, ?, ?, ?, ?, ?)";
     //End SQL insert statements
 
 
@@ -260,6 +265,77 @@ public class Datadestination {
             }
         } catch (SQLException e){
             System.out.println("Insert diet exception: " + e.getMessage());
+            try {
+                System.out.println("Performing rollback");
+                conn.rollback();
+            } catch (SQLException e2){
+                System.out.println("Error on the rollback: " + e.getMessage());
+            }
+        } finally {
+            try {
+                //System.out.println("Resetting default commit behavior.");  //Use for testing purposes
+                conn.setAutoCommit(true);  //good practice to turn transaction back on immediately after in same transaction where it was turned off
+            } catch (SQLException e){
+                System.out.println("Couldn't reset auto-commit: " + e.getMessage());
+            }
+        }
+    }
+
+    public void insertIngredient(int id, int recipeId, String ingredientName, String ingredientDescription, Double amount,
+                                 String unitOfAmount){
+        try {
+            conn.setAutoCommit(false);
+
+            insertIntoIngredient.setInt(1, id);
+            insertIntoIngredient.setInt(2, recipeId);
+            insertIntoIngredient.setString(3, ingredientName);
+            insertIntoIngredient.setString(4, ingredientDescription);
+            insertIntoIngredient.setLong(5, amount.longValue());
+            insertIntoIngredient.setString(6, unitOfAmount);
+            int affectedRows = insertIntoIngredient.executeUpdate();
+            if (affectedRows == 1) {
+                conn.commit();
+            } else {
+                throw new SQLException("The ingredient insert failed");
+            }
+        } catch (SQLException e){
+            System.out.println("Insert ingredient exception: " + e.getMessage());
+            try {
+                System.out.println("Performing rollback");
+                conn.rollback();
+            } catch (SQLException e2){
+                System.out.println("Error on the rollback: " + e.getMessage());
+            }
+        } finally {
+            try {
+                //System.out.println("Resetting default commit behavior.");  //Use for testing purposes
+                conn.setAutoCommit(true);  //good practice to turn transaction back on immediately after in same transaction where it was turned off
+            } catch (SQLException e){
+                System.out.println("Couldn't reset auto-commit: " + e.getMessage());
+            }
+        }
+    }
+
+    public void insertInstruction(int id, int recipeId, int stepNumber, String instruction,
+                                  String ingredientNeededListAsString, String equipmentNeededListAsString){
+        try {
+            conn.setAutoCommit(false);
+
+            insertIntoInstruction.setInt(1, id);
+            insertIntoInstruction.setInt(2, recipeId);
+            insertIntoInstruction.setInt(3, stepNumber);
+            insertIntoInstruction.setString(4, instruction);
+            insertIntoInstruction.setString(5, ingredientNeededListAsString);
+            insertIntoInstruction.setString(6, equipmentNeededListAsString);
+
+            int affectedRows = insertIntoInstruction.executeUpdate();
+            if (affectedRows == 1) {
+                conn.commit();
+            } else {
+                throw new SQLException("The instruction insert failed");
+            }
+        } catch (SQLException e){
+            System.out.println("Insert instruction exception: " + e.getMessage());
             try {
                 System.out.println("Performing rollback");
                 conn.rollback();

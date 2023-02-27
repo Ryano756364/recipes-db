@@ -2,8 +2,6 @@ package com.nobsrecipebook;
 import com.nobsrecipebook.model.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +45,9 @@ public class Main {
     private static ArrayList<Ingredient> INGREDIENT_OBJ_LIST = new ArrayList<>();
     private static ArrayList<Instruction> INSTRUCTION_OBJ_LIST = new ArrayList<>();
 
+    //Misc
+    private static int ingredientPrimaryKeyGenerator = 1;
+    private static int instructionPrimaryKeyGenerator = 1;
 
 
     public static void main(String[] args) {
@@ -77,7 +78,9 @@ public class Main {
         //sendJavaRecipeClassToSQL(datadestination);
         //sendCuisineClassToSQL(datadestination);
         //sendDishTypeClassToSQL(datadestination);
-        sendDietClassToSQL(datadestination);
+        //sendDietClassToSQL(datadestination);
+        //sendIngredientClassToSQL(datadestination);
+        //sendInstructionClassToSQL(datadestination);
         closeDataDestination(datadestination);
     }
 
@@ -191,7 +194,6 @@ public class Main {
                     (JSONArray) jsonObject2.get(JSON_INGREDIENT_MAIN_KEY));
             //Write to Instruction Class
             createInstructionClassObjectsWithJsonData(
-                    primaryKeyGenerator,
                     RecipePrimaryKey,
                     (JSONArray) jsonObject2.get(JSON_INSTRUCTION_MAIN_KEY));
 
@@ -350,18 +352,20 @@ public class Main {
 
     //Ingredient data handling
     public static void createIngredientClassObjectsWithJsonData(int foreignKey, JSONArray extendedIngredientArr) {
-        Ingredient ingredient = new Ingredient();
-        ingredient.setRecipeIdForeignKey(foreignKey);
+        //future release pull from a db with each ingredient as it owns PK and amount as its own PK in another table
         for(Object o : extendedIngredientArr){
+            Ingredient ingredient = new Ingredient();
+            ingredient.setIdPrimaryKey(ingredientPrimaryKeyGenerator);
+            ingredient.setRecipeIdForeignKey(foreignKey);
             JSONObject jsonObject2 = new JSONObject((Map) o);
-            ingredient.setIdPrimaryKey(Math.toIntExact((Long) jsonObject2.get(JSON_INGREDIENT_ID)));
             ingredient.setAisleOfIngredient((String) jsonObject2.get(JSON_INGREDIENT_AISLE));
             ingredient.setNameOfIngredient((String) jsonObject2.get(JSON_INGREDIENT_NAME));
             ingredient.setDescriptionOfIngredient((String) jsonObject2.get(JSON_INGREDIENT_DESCRIPTION));
             ingredient.setAmountOfIngredientNeeded((Double) jsonObject2.get(JSON_INGREDIENT_AMOUNT));
             ingredient.setUnitMeasurementOfIngredient((String) jsonObject2.get(JSON_INGREDIENT_UNIT));
+            INGREDIENT_OBJ_LIST.add(ingredient);
+            ingredientPrimaryKeyGenerator++;
         }
-        INGREDIENT_OBJ_LIST.add(ingredient);
     }
     public static void viewIngredientClassData(ArrayList<Ingredient> ingredient){
         for(Ingredient i : ingredient){
@@ -374,17 +378,30 @@ public class Main {
             System.out.println("Unit: " + i.getUnitMeasurementOfIngredient());
         }
     }
+    public static void sendIngredientClassToSQL(Datadestination datadestination){
+        for(Ingredient i : INGREDIENT_OBJ_LIST){
+            datadestination.insertIngredient(
+                    i.getIdPrimaryKey(),
+                    i.getRecipeIdForeignKey(),
+                    i.getNameOfIngredient(),
+                    i.getDescriptionOfIngredient(),
+                    i.getAmountOfIngredientNeeded(),
+                    i.getUnitMeasurementOfIngredient()
+            );
+        }
+    }
     //End ingredient data handling
 
     //Instruction data handling
-    public static void createInstructionClassObjectsWithJsonData(int primaryKey, int foreignKey, JSONArray instructionJsonArr) {
-        Instruction instruction = new Instruction();
-        instruction.setIdPrimaryKey(primaryKey);
-        instruction.setRecipeIdForeignKey(foreignKey);
+    public static void createInstructionClassObjectsWithJsonData(int foreignKey, JSONArray instructionJsonArr) {
         for(Object analyzedInstructionElement : instructionJsonArr){
+
             JSONObject jsonObject2 = new JSONObject((Map) analyzedInstructionElement);
             JSONArray lineItems = (JSONArray) jsonObject2.get(JSON_INSTRUCTION_STEP_ARR);
             for (Object o : lineItems){
+                Instruction instruction = new Instruction();
+                instruction.setRecipeIdForeignKey(foreignKey);
+                instruction.setIdPrimaryKey(instructionPrimaryKeyGenerator);
                 JSONObject jsonObject3 = new JSONObject((Map) o);
                 instruction.setStepNumber(Math.toIntExact((Long) jsonObject3.get(JSON_INSTRUCTION_STEP_NUMBER)));
                 instruction.setDescriptionOfStep((String) jsonObject3.get(JSON_INSTRUCTION_STEP_DESC));
@@ -406,9 +423,10 @@ public class Main {
                     equipmentList.add((String) jsonObject4.get(JSON_INSTRUCTION_STEP_EQUIPMENT_NAME));
                 }
                 instruction.setEquipmentNeeded(equipmentList);
+                INSTRUCTION_OBJ_LIST.add(instruction);
+                instructionPrimaryKeyGenerator++;
             }
         }
-        INSTRUCTION_OBJ_LIST.add(instruction);
     }
     public static void viewInstructionClassData(ArrayList<Instruction> instruction){
         for(Instruction i : instruction){
@@ -416,16 +434,24 @@ public class Main {
             System.out.println("Recipe FK: " + i.getRecipeIdForeignKey());
             System.out.println("Step Number: " + i.getStepNumber());
             System.out.println("Step description: " + i.getDescriptionOfStep());
-            if(i.getIngredientsNeeded() != null) {
-                for (String s : i.getIngredientsNeeded()) {
-                    System.out.println(s);
-                }
+            if(i.getIngredientsNeededAsString() != null) {
+                System.out.println(i.getIngredientsNeededAsString());
             }
-            if(i.getEquipmentNeeded() != null){
-                for(String s : i.getEquipmentNeeded()){
-                    System.out.println(s);
-                }
+            if(i.getEquipmentNeededAsString() != null){
+                System.out.println(i.getEquipmentNeededAsString());
             }
+        }
+    }
+    public static void sendInstructionClassToSQL(Datadestination datadestination){
+        for(Instruction i : INSTRUCTION_OBJ_LIST){
+            datadestination.insertInstruction(
+                    i.getIdPrimaryKey(),
+                    i.getRecipeIdForeignKey(),
+                    i.getStepNumber(),
+                    i.getDescriptionOfStep(),
+                    i.getIngredientsNeededAsString(),
+                    i.getEquipmentNeededAsString()
+            );
         }
     }
     //End instruction data handling

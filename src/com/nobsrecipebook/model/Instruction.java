@@ -43,16 +43,36 @@ public class Instruction {
         this.descriptionOfStep = descriptionOfStep;
     }
 
-    public ArrayList<String> getIngredientsNeeded() {
-        return ingredientsNeeded;
+    public String getIngredientsNeededAsString() {
+        StringBuilder stringToReturn = new StringBuilder();
+
+        for(String t : ingredientsNeeded){
+            if (t != null) {
+                stringToReturn.append(t).append(", ");
+            }
+        }
+        if (stringToReturn.length() > 2) {
+            stringToReturn.setLength(stringToReturn.length() - 2);
+        }
+        return stringToReturn.toString();
     }
 
     public void setIngredientsNeeded(ArrayList<String> ingredientsNeeded) {
         this.ingredientsNeeded = ingredientsNeeded;
     }
 
-    public ArrayList<String> getEquipmentNeeded() {
-        return equipmentNeeded;
+    public String getEquipmentNeededAsString() {
+        StringBuilder stringToReturn = new StringBuilder();
+
+        for(String t : equipmentNeeded){
+            if (t != null) {
+                stringToReturn.append(t).append(", ");
+            }
+        }
+        if (stringToReturn.length() > 2) {
+            stringToReturn.setLength(stringToReturn.length() - 2);
+        }
+        return stringToReturn.toString();
     }
 
     public void setEquipmentNeeded(ArrayList<String> equipmentNeeded) {
