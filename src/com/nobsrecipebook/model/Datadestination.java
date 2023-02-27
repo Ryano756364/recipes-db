@@ -351,7 +351,5 @@ public class Datadestination {
             }
         }
     }
-
-
     //End SQL insert methods
 }
